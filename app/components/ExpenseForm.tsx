@@ -66,13 +66,14 @@ const ErrorMessage = ({ children }: { children: React.ReactNode }) => (
 )
 
 const ExpenseForm = () => {
-  const [state, dispatch] = React.useReducer(reducer, {}, getInitFormValues)
+  const [formState, dispatch] = React.useReducer(reducer, {}, getInitFormValues)
   const [errors, setErrors] = React.useState<Errors>({})
+  const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false)
 
   const isValid = () => {
     let errors: Errors = {}
-    Object.keys(state).forEach((key) => {
-      const value = state[key as keyof FormValues]
+    Object.keys(formState).forEach((key) => {
+      const value = formState[key as keyof FormValues]
       if (key === 'date' && value === '') {
         errors.date = 'Select a date'
       } else if (key === 'price' && value === '') {
@@ -93,16 +94,17 @@ const ExpenseForm = () => {
       return
     }
 
+    setIsSubmitting(true)
     const response = await fetch('/api/expense', {
       method: 'POST',
-      body: JSON.stringify(state),
+      body: JSON.stringify(formState),
       headers: {
         'Content-Type': 'application/json',
       },
     })
 
     const data = await response.json()
-    console.log(data)
+    setIsSubmitting(false)
   }
 
   const handleOnChangePrice = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,7 +142,7 @@ const ExpenseForm = () => {
         <input
           name="date"
           type="date"
-          value={state.date}
+          value={formState.date}
           onChange={(e) =>
             dispatch({ type: 'updateDate', value: e.target.value })
           }
@@ -165,7 +167,7 @@ const ExpenseForm = () => {
             inputMode="decimal"
             className="block w-full rounded-md border-0 py-1.5 pl-7 pr-2 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             onChange={handleOnChangePrice}
-            value={state.price}
+            value={formState.price}
           />
         </div>
         {errors?.price && <ErrorMessage>{errors.price}</ErrorMessage>}
@@ -184,8 +186,9 @@ const ExpenseForm = () => {
               className={clsx(
                 'h-full w-full text-left p-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue ring-1 ring-inset ring-gray-300',
                 {
-                  'bg-white': state.category !== category.value,
-                  'bg-sky-800 text-white': state.category === category.value,
+                  'bg-white': formState.category !== category.value,
+                  'bg-sky-800 text-white':
+                    formState.category === category.value,
                 }
               )}
             >
@@ -196,12 +199,42 @@ const ExpenseForm = () => {
         {errors?.category && <ErrorMessage>{errors.category}</ErrorMessage>}
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-md"
-      >
-        Submit
-      </button>
+      {isSubmitting ? (
+        <button
+          type="button"
+          className="flex justify-center w-full bg-teal-700 hover:bg-teal-600 cursor-not-allowed text-white py-2 px-4 rounded-md"
+          disabled
+        >
+          <svg
+            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Submitting...
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-md"
+        >
+          Submit
+        </button>
+      )}
     </form>
   )
 }
