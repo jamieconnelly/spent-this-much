@@ -182,8 +182,9 @@ const ExpenseForm = () => {
                 dispatch({ type: 'updateCategory', value: category.value })
               }}
               className={clsx(
-                'h-full w-full text-left bg-white p-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue ring-1 ring-inset ring-gray-300',
+                'h-full w-full text-left p-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue ring-1 ring-inset ring-gray-300',
                 {
+                  'bg-white': state.category !== category.value,
                   'bg-sky-800 text-white': state.category === category.value,
                 }
               )}
