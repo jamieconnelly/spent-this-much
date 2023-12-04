@@ -8,3 +8,7 @@ authors = ["Jamie Connelly <jamiebruceconnelly@gmail.com>"]
 python = ">3.9,<3.10"
 fastapi = "0.100.1"
 uvicorn = { version = "0.23.2", extras = ["standard"] }
+google-api-python-client = "^2.109.0"
+google-auth-httplib2 = "^0.1.1"
+google-auth-oauthlib = "^1.1.0"
+google-cloud = "^0.34.0"
