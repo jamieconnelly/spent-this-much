@@ -1,45 +1,79 @@
 import base64
 import json
 import os
+from typing import Literal
+
+import googleapiclient
+from fastapi import FastAPI, HTTPException
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from fastapi import FastAPI
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    GOOGLE_CREDENTIALS: str = os.environ['GOOGLE_CREDENTIALS']
+    GOOGLE_CREDENTIALS: str = os.environ["GOOGLE_CREDENTIALS"]
     GOOGLE_SHEET_ID: str = os.environ["GOOGLE_SHEET_ID"]
 
+
+class GoogleSheetsClient:
+    def __init__(self, settings, **kwargs):
+        credentials = base64.b64decode(settings.GOOGLE_CREDENTIALS)
+        credentials = json.loads(credentials)
+        credentials = service_account.Credentials.from_service_account_info(
+            credentials, scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        )
+        self.service = build("sheets", "v4", credentials=credentials).spreadsheets()
+
+    def get_sheet(self):
+        return (
+            self.service.values()
+            .get(spreadsheetId=settings.GOOGLE_SHEET_ID, range="Sheet1")
+            .execute()
+        )
+
+    def insert_row(self, row):
+        values = self.get_sheet().get("values", [])
+        next_row_number = len(values) + 1
+        return (
+            self.service.values()
+            .update(
+                spreadsheetId=settings.GOOGLE_SHEET_ID,
+                range=f"Sheet1!A{next_row_number}",
+                valueInputOption="RAW",
+                body={
+                    "values": [row],
+                },
+            )
+            .execute()
+        )
+
+
 settings = Settings()
+sheets_client = GoogleSheetsClient(settings)
 app = FastAPI()
 
 
 class Expense(BaseModel):
     date: str
     price: float
+    category: Literal[
+        "FOOD_SHOP",
+        "EATING_OUT",
+        "SHOPPING",
+        "RENT",
+        "WATER",
+        "ELECTRIC",
+        "INTERNET",
+        "OTHER",
+    ]
 
 
 @app.post("/api/expense")
 def create_expense(expense: Expense):
-    print(expense)
+    new_row = [expense.date, expense.price, expense.category]
+    try:
+        sheets_client.insert_row(new_row)
+    except googleapiclient.errors.HttpError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.reason)
     return expense
-
-
-@app.get('/api/sheet')
-def get_expense():
-    credentials = base64.b64decode(settings.GOOGLE_CREDENTIALS)
-    credentials = json.loads(credentials)
-    credentials = service_account.Credentials.from_service_account_info(
-        credentials, scopes=["https://www.googleapis.com/auth/spreadsheets"]
-    )
-
-    service = build("sheets", "v4", credentials=credentials)
-    request = service.spreadsheets().get(
-        spreadsheetId=settings.GOOGLE_SHEET_ID, ranges=[], includeGridData=False
-    )
-    sheet_props = request.execute()
-
-    print(sheet_props["properties"]["title"])
-    return {"result": sheet_props["properties"]}
