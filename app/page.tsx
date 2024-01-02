@@ -1,9 +1,17 @@
 'use client'
 import React from 'react'
+import { useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
 import ExpenseForm from './components/ExpenseForm'
 import SavedStatus, { SavedNotificationStatus } from './components/SavedStatus'
 
 export default function Home() {
+  useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/signin')
+    },
+  })
   const [SavedNotificationState, setSavedNotificationState] = React.useState<{
     status: SavedNotificationStatus
     message?: string | undefined
@@ -20,6 +28,7 @@ export default function Home() {
         />
       )}
       <h1 className="w-full max-w-screen-md mx-auto text-3xl font-black self-start">
+        {/* > */}
         Spent This Much
       </h1>
       <div className="mt-8 pt-10 pb-10 w-full max-w-screen-md mx-auto flex items-center justify-between bg-sky-900 text-white p-4 rounded-md mb-2">
@@ -31,3 +40,5 @@ export default function Home() {
     </main>
   )
 }
+
+Home.requireAuth = true
