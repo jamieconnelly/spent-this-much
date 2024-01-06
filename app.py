@@ -4,11 +4,14 @@ import os
 from typing import Literal
 
 import googleapiclient
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from mangum import Mangum
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+from starlette.middleware.cors import CORSMiddleware
 
 
 class Settings(BaseSettings):
@@ -52,6 +55,15 @@ class GoogleSheetsClient:
 settings = Settings()
 sheets_client = GoogleSheetsClient(settings)
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
+
+handler = Mangum(app)
 
 
 class Expense(BaseModel):
@@ -64,12 +76,14 @@ class Expense(BaseModel):
         "RENT",
         "WATER",
         "ELECTRIC",
+        "PETROL",
+        "PHARMACY",
         "INTERNET",
         "OTHER",
     ]
 
 
-@app.post("/api/expense")
+@app.post("/v1/expenses")
 def create_expense(expense: Expense):
     new_row = [expense.date, expense.price, expense.category]
     try:
@@ -77,3 +91,12 @@ def create_expense(expense: Expense):
     except googleapiclient.errors.HttpError as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.reason)
     return expense
+
+
+@app.get("/v1/hello")
+def hello():
+    return {"hello": "world"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)
