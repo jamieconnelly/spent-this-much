@@ -11,6 +11,8 @@ enum Category {
   RENT = 'RENT',
   WATER = 'WATER',
   ELECTRIC = 'ELECTRIC',
+  PETROL = 'PETROL',
+  PHARMACY = 'PHARMACY',
   INTERNET = 'INTERNET',
   OTHER = 'OTHER',
 }
@@ -151,9 +153,11 @@ const ExpenseForm = ({
     { name: 'Food shop', value: Category.FOOD_SHOP },
     { name: 'Eating out', value: Category.EATING_OUT },
     { name: 'Shopping', value: Category.SHOPPING },
+    { name: 'Pharmacy', value: Category.PHARMACY },
     { name: 'Rent', value: Category.RENT },
     { name: 'Water', value: Category.WATER },
     { name: 'Electric', value: Category.ELECTRIC },
+    { name: 'Petrol', value: Category.PETROL },
     { name: 'Internet', value: Category.INTERNET },
     { name: 'Other', value: Category.OTHER },
   ]
