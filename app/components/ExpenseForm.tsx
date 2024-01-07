@@ -6,8 +6,6 @@ import Spinner from './Spinner'
 
 enum Category {
   FOOD_SHOP = 'FOOD_SHOP',
-  EATING_OUT = 'EATING_OUT',
-  SHOPPING = 'SHOPPING',
   RENT = 'RENT',
   WATER = 'WATER',
   ELECTRIC = 'ELECTRIC',
@@ -151,8 +149,6 @@ const ExpenseForm = ({
 
   const categories = [
     { name: 'Food shop', value: Category.FOOD_SHOP },
-    { name: 'Eating out', value: Category.EATING_OUT },
-    { name: 'Shopping', value: Category.SHOPPING },
     { name: 'Pharmacy', value: Category.PHARMACY },
     { name: 'Rent', value: Category.RENT },
     { name: 'Water', value: Category.WATER },

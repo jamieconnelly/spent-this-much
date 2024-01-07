@@ -71,8 +71,6 @@ class Expense(BaseModel):
     price: float
     category: Literal[
         "FOOD_SHOP",
-        "EATING_OUT",
-        "SHOPPING",
         "RENT",
         "WATER",
         "ELECTRIC",
