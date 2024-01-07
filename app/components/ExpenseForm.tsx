@@ -215,7 +215,7 @@ const ExpenseForm = ({
 
         <div className="mb-4">
           <span className="text-gray-700">Category</span>
-          <div className="mt-2 grid grid-cols-3 gap-4">
+          <div className="mt-2 grid grid-flow-row md:grid-flow-col md:grid-rows-2 gap-4">
             {categories.map((category) => (
               <button
                 key={category.value}
@@ -224,7 +224,7 @@ const ExpenseForm = ({
                   dispatch({ type: 'updateCategory', value: category.value })
                 }}
                 className={clsx(
-                  'h-full w-full text-left p-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue ring-1 ring-inset ring-gray-300',
+                  'text-ellipsis overflow-hidden w-full md:max-w-[14.5em] text-left p-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue ring-1 ring-inset ring-gray-300',
                   {
                     'bg-white': formState.category !== category.value,
                     'bg-sky-800 text-white':
