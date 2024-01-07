@@ -1,4 +1,5 @@
 import base64
+import datetime
 import json
 import os
 from typing import Literal
@@ -66,7 +67,7 @@ handler = Mangum(app)
 
 
 class Expense(BaseModel):
-    date: str
+    date: datetime.date
     price: float
     category: Literal[
         "FOOD_SHOP",
@@ -84,7 +85,13 @@ class Expense(BaseModel):
 
 @app.post("/expenses")
 def create_expense(expense: Expense):
-    new_row = [expense.date, expense.price, expense.category]
+    new_row = [
+        (
+            expense.date - datetime.date(1899, 12, 30)
+        ).days,  # Credit - https://github.com/burnash/gspread/issues/511#issuecomment-386488606
+        expense.price,
+        expense.category,
+    ]
     try:
         sheets_client.insert_row(new_row)
     except googleapiclient.errors.HttpError as exc:
