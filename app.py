@@ -4,7 +4,6 @@ import os
 from typing import Literal
 
 import googleapiclient
-import uvicorn
 from fastapi import FastAPI, HTTPException
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -83,7 +82,7 @@ class Expense(BaseModel):
     ]
 
 
-@app.post("/v1/expenses")
+@app.post("/expenses")
 def create_expense(expense: Expense):
     new_row = [expense.date, expense.price, expense.category]
     try:
@@ -93,10 +92,6 @@ def create_expense(expense: Expense):
     return expense
 
 
-@app.get("/v1/hello")
+@app.get("/hello")
 def hello():
     return {"hello": "world"}
-
-
-if __name__ == "__main__":
-    uvicorn.run(app)

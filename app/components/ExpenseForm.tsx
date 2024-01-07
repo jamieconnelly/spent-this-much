@@ -109,7 +109,7 @@ const ExpenseForm = ({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch('/api/v1/expense', {
+      const response = await fetch('/api/expenses', {
         method: 'POST',
         body: JSON.stringify(formState),
         headers: {
