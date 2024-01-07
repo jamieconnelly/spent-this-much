@@ -19,18 +19,21 @@ type FormValues = {
   date: string
   price: string
   category: Category | null
+  description: string | null
 }
 
 type Errors = Partial<{
   date: string | null
   price: string | null
   category: string | null
+  description: string | null
 }>
 
 type UpdateDate = { type: 'updateDate'; value: string }
 type UpdatePrice = { type: 'updatePrice'; value: string }
 type UpdateCategory = { type: 'updateCategory'; value: Category }
-type Actions = UpdateDate | UpdatePrice | UpdateCategory
+type UpdateDescription = { type: 'updateDescription'; value: string }
+type Actions = UpdateDate | UpdatePrice | UpdateCategory | UpdateDescription
 
 const reducer = (state: FormValues, action: Actions): FormValues => {
   if (action.type === 'updateDate') {
@@ -48,6 +51,11 @@ const reducer = (state: FormValues, action: Actions): FormValues => {
       ...state,
       category: action.value,
     }
+  } else if (action.type == 'updateDescription') {
+    return {
+      ...state,
+      description: action.value,
+    }
   } else {
     return state
   }
@@ -60,6 +68,7 @@ const getInitFormValues = () => {
     date: formattedDate,
     price: '',
     category: null,
+    description: null,
   }
 }
 
@@ -228,6 +237,24 @@ const ExpenseForm = ({
             ))}
           </div>
           {errors?.category && <ErrorMessage>{errors.category}</ErrorMessage>}
+          {formState.category === Category.OTHER && (
+            <div className="mt-4">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium leading-6"
+              />
+              <span className="text-gray-700">Description</span>
+              <input
+                name="description"
+                type="text"
+                value={formState.description || ''}
+                onChange={(e) =>
+                  dispatch({ type: 'updateDescription', value: e.target.value })
+                }
+                className="block w-full rounded-md border-0 py-1.5 pl-2 pr-2 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          )}
         </div>
 
         {isSubmitting ? (

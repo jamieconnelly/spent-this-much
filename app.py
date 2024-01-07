@@ -2,7 +2,7 @@ import base64
 import datetime
 import json
 import os
-from typing import Literal
+from typing import Literal, Optional
 
 import googleapiclient
 from fastapi import FastAPI, HTTPException
@@ -79,6 +79,7 @@ class Expense(BaseModel):
         "INTERNET",
         "OTHER",
     ]
+    description: Optional[str]
 
 
 @app.post("/expenses")
@@ -90,6 +91,8 @@ def create_expense(expense: Expense):
         expense.price,
         expense.category,
     ]
+    if expense.category == "OTHER" and expense.description is not None:
+        new_row.append(expense.description)
     try:
         sheets_client.insert_row(new_row)
     except googleapiclient.errors.HttpError as exc:
