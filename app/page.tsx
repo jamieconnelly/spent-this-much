@@ -27,14 +27,9 @@ export default function Home() {
           handleClose={resetSavedNotificationState}
         />
       )}
-      <h1 className="w-full max-w-screen-md mx-auto text-3xl font-black self-start">
+      <h1 className="mb-4 w-full max-w-screen-md mx-auto text-3xl font-black self-start">
         Spent This Much
       </h1>
-      <div className="mt-4 pt-10 pb-10 w-full max-w-screen-md mx-auto flex items-center justify-between bg-sky-900 text-white p-4 rounded-md mb-2">
-        <p className="text-lg font-semibold pl-2">Total Expenses Today</p>
-        <span className="mx-2">|</span>
-        <p className="text-2xl pr-2">€0</p>
-      </div>
       <ExpenseForm setSavedNotificationState={setSavedNotificationState} />
     </main>
   )
