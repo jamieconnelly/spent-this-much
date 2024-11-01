@@ -74,8 +74,10 @@ class Expense(BaseModel):
         "RENT",
         "WATER",
         "ELECTRIC",
+        "SUBSCRIPTION",
+        "MOBILE",
         "PETROL",
-        "PHARMACY",
+        "BABY",
         "INTERNET",
         "OTHER",
     ]
@@ -91,7 +93,15 @@ def create_expense(expense: Expense):
         expense.price,
         expense.category,
     ]
-    if expense.category == "OTHER" and expense.description is not None:
+    if (
+        expense.category
+        in [
+            "OTHER",
+            "BABY",
+            "SUBSCRIPTION",
+        ]
+        and expense.description is not None
+    ):
         new_row.append(expense.description)
     try:
         sheets_client.insert_row(new_row)

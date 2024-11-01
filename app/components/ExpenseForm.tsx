@@ -9,8 +9,10 @@ enum Category {
   RENT = 'RENT',
   WATER = 'WATER',
   ELECTRIC = 'ELECTRIC',
+  SUBSCRIPTION = 'SUBSCRIPTION',
+  MOBILE = 'MOBILE',
   PETROL = 'PETROL',
-  PHARMACY = 'PHARMACY',
+  BABY = 'BABY',
   INTERNET = 'INTERNET',
   OTHER = 'OTHER',
 }
@@ -158,10 +160,12 @@ const ExpenseForm = ({
 
   const categories = [
     { name: 'Food shop', value: Category.FOOD_SHOP },
-    { name: 'Pharmacy', value: Category.PHARMACY },
+    { name: 'Baby', value: Category.BABY },
     { name: 'Rent', value: Category.RENT },
     { name: 'Water', value: Category.WATER },
     { name: 'Electric', value: Category.ELECTRIC },
+    { name: 'Subscription', value: Category.SUBSCRIPTION },
+    { name: 'Mobile', value: Category.MOBILE },
     { name: 'Petrol', value: Category.PETROL },
     { name: 'Internet', value: Category.INTERNET },
     { name: 'Other', value: Category.OTHER },
@@ -237,24 +241,30 @@ const ExpenseForm = ({
             ))}
           </div>
           {errors?.category && <ErrorMessage>{errors.category}</ErrorMessage>}
-          {formState.category === Category.OTHER && (
-            <div className="mt-4">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium leading-6"
-              />
-              <span className="text-gray-700">Description</span>
-              <input
-                name="description"
-                type="text"
-                value={formState.description || ''}
-                onChange={(e) =>
-                  dispatch({ type: 'updateDescription', value: e.target.value })
-                }
-                className="block w-full rounded-md border-0 py-1.5 pl-2 pr-2 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          )}
+          {formState.category &&
+            [Category.OTHER, Category.SUBSCRIPTION, Category.BABY].includes(
+              formState.category
+            ) && (
+              <div className="mt-4">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium leading-6"
+                />
+                <span className="text-gray-700">Description</span>
+                <input
+                  name="description"
+                  type="text"
+                  value={formState.description || ''}
+                  onChange={(e) =>
+                    dispatch({
+                      type: 'updateDescription',
+                      value: e.target.value,
+                    })
+                  }
+                  className="block w-full rounded-md border-0 py-1.5 pl-2 pr-2 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            )}
         </div>
 
         {isSubmitting ? (
