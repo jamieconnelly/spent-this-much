@@ -42,3 +42,18 @@ env API_SERVER_URL='http://localhost:8000' yarn run next-dev
 If not using the `uvicorn` default port, update the `API_SERVER_URL` accordingly
 
 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Deploying
+
+### Frontend
+
+The frontend app is automatically deployed on [vercel](https://vercel.com/) whenever code is pushed to `main`
+
+### Backend
+
+1. Build new docker image - `docker build -t spent-this-much-api .`
+2. Tag image - `docker tag spent-this-much-api:latest 610678765694.dkr.ecr.eu-central-1.amazonaws.com/spent-this-much:latest`
+3. Login to ecr - `aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 610678765694.dkr.ecr.eu-central-1.amazonaws.com`
+4. Push to ecr - `docker push 610678765694.dkr.ecr.eu-central-1.amazonaws.com/spent-this-much:latest`
+5. Login into AWS web app and locate the Lambda
+6. Select "Deploy new image" and find and select the new image
