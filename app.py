@@ -17,6 +17,7 @@ from starlette.middleware.cors import CORSMiddleware
 class Settings(BaseSettings):
     GOOGLE_CREDENTIALS: str = os.environ["GOOGLE_CREDENTIALS"]
     GOOGLE_SHEET_ID: str = os.environ["GOOGLE_SHEET_ID"]
+    GOOGLE_SHEET_NAME: str = os.environ["GOOGLE_SHEET_NAME"]
 
 
 class GoogleSheetsClient:
@@ -31,7 +32,10 @@ class GoogleSheetsClient:
     def get_sheet(self):
         return (
             self.service.values()
-            .get(spreadsheetId=settings.GOOGLE_SHEET_ID, range="Sheet1")
+            .get(
+                spreadsheetId=settings.GOOGLE_SHEET_ID,
+                range=settings.GOOGLE_SHEET_NAME,
+            )
             .execute()
         )
 
@@ -42,7 +46,7 @@ class GoogleSheetsClient:
             self.service.values()
             .update(
                 spreadsheetId=settings.GOOGLE_SHEET_ID,
-                range=f"Sheet1!A{next_row_number}",
+                range=f"{settings.GOOGLE_SHEET_NAME}!A{next_row_number}",
                 valueInputOption="RAW",
                 body={
                     "values": [row],
