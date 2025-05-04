@@ -83,6 +83,8 @@ class Expense(BaseModel):
         "PETROL",
         "BABY",
         "INTERNET",
+        "PROJECT_HOUSE",
+        "EAT_OUT",
         "OTHER",
     ]
     description: Optional[str]
@@ -103,6 +105,8 @@ def create_expense(expense: Expense):
             "OTHER",
             "BABY",
             "SUBSCRIPTION",
+            "PROJECT_HOUSE",
+            "EAT_OUT",
         ]
         and expense.description is not None
     ):

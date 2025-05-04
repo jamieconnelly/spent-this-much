@@ -14,6 +14,8 @@ enum Category {
   PETROL = 'PETROL',
   BABY = 'BABY',
   INTERNET = 'INTERNET',
+  PROJECT_HOUSE = 'PROJECT_HOUSE',
+  EAT_OUT = 'EAT_OUT',
   OTHER = 'OTHER',
 }
 
@@ -168,6 +170,8 @@ const ExpenseForm = ({
     { name: 'Mobile', value: Category.MOBILE },
     { name: 'Petrol', value: Category.PETROL },
     { name: 'Internet', value: Category.INTERNET },
+    { name: 'Eat out', value: Category.EAT_OUT },
+    { name: 'Project house', value: Category.PROJECT_HOUSE },
     { name: 'Other', value: Category.OTHER },
   ]
 
@@ -242,9 +246,13 @@ const ExpenseForm = ({
           </div>
           {errors?.category && <ErrorMessage>{errors.category}</ErrorMessage>}
           {formState.category &&
-            [Category.OTHER, Category.SUBSCRIPTION, Category.BABY].includes(
-              formState.category
-            ) && (
+            [
+              Category.OTHER,
+              Category.SUBSCRIPTION,
+              Category.BABY,
+              Category.PROJECT_HOUSE,
+              Category.EAT_OUT,
+            ].includes(formState.category) && (
               <div className="mt-4">
                 <label
                   htmlFor="description"
